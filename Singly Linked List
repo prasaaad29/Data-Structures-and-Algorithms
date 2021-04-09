@@ -104,6 +104,11 @@ void linkedlist::deletePos(int pos)
     {
         pass=pass->next;
     }
+    if (pass->next->next==NULL)
+    {
+        deleteLast();
+        return;
+    }
     temp=pass->next;
     pass->next=temp->next;
     delete temp;
