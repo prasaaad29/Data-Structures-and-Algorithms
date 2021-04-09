@@ -1,0 +1,242 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct node
+{
+    int data;
+    node *prev;
+    node *next;
+};
+
+class linkedlist
+{
+    node *head=NULL;
+public:
+    node *getnode(int);
+    node *gethead();
+    bool isempty();
+    void insertFirst(int);
+    void insertPos(int,int);
+    void insertLast(int);
+    void deleteFirst();
+    void deletePos(int);
+    void deleteLast();
+    void display();
+
+};
+
+bool linkedlist::isempty()
+{
+    if (head==NULL)
+        return true;
+    return false;
+}
+
+node *linkedlist::gethead() {return head;}
+
+node *linkedlist::getnode(int num)
+{
+    node *temp=new node();
+    temp->data=num;
+    temp->prev=NULL;
+    temp->next=NULL;
+    return temp;
+}
+
+void linkedlist::insertFirst(int num)
+{
+    if (head==NULL)
+    {
+        head=getnode(num);
+        return;
+    }
+    node *temp=getnode(num);
+    temp->next=head;
+    head->prev=temp;
+    head=temp;
+}
+
+void linkedlist::insertPos(int num,int pos)
+{
+    if (pos==1)
+    {
+        insertFirst(num);
+        return;
+    }
+
+    node *pass=head;
+    node *temp=getnode(num);
+    for (int i = 1; i < pos-1; ++i)
+    {
+        pass=pass->next;
+    }
+    temp->next=pass->next;
+    temp->prev=pass;
+    pass->next=temp;
+    pass->next->prev=temp;
+}
+
+void linkedlist::insertLast(int num)
+{
+    if (isempty())
+    {
+        insertFirst(num);
+        return;
+    }
+
+    node *pass=head;
+    node *temp=getnode(num);
+
+    while (pass->next!=NULL)
+    {
+        pass=pass->next;
+    }
+    pass->next=temp;
+    temp->prev=pass;
+
+}
+
+void linkedlist::deleteFirst()
+{
+    node *temp=head;
+    head=head->next;
+    head->prev=NULL;
+    free(temp);
+}
+
+void linkedlist::deletePos(int pos)
+{
+    if (pos==1)
+    {
+        deleteFirst();
+        return;
+    }
+    node *pass=head;
+    node *temp=NULL;
+    for (int i = 1; i < pos-1; ++i)
+    {
+        pass=pass->next;
+    }
+    if (pass->next->next==NULL)
+    {
+        deleteLast();
+        return;
+    }
+    temp=pass->next;
+    pass->next=temp->next;
+    temp->next->prev=pass;
+    free(temp);
+}
+
+void linkedlist::deleteLast()
+{
+    node *pass=head;
+    node *temp=NULL;
+    if (pass->next==NULL)
+    {
+        deleteFirst();
+    }
+    while (pass->next!=NULL)
+    {
+        pass=pass->next;
+    }
+    pass->prev->next=NULL;
+    free(pass);
+}
+
+
+void linkedlist::display()
+{
+    if (isempty())
+    {
+        cout<<"\nList is empty!\n\n";
+        return;
+    }
+
+    node *pass=head;
+    cout<<"\n\n";
+    while (pass!=NULL)
+    {
+        cout<<pass->data<<" ";
+        pass=pass->next;
+    }
+    cout<<"\n\n";
+}
+
+
+int main()
+{
+    linkedlist l;
+
+    while (1)
+    {
+        cout<<"\n1)Insert First\n2)Insert Position\n3)Insert Last\n"
+              "4)Delete First\n5)Delete Position\n6)Delete Last\n"
+              "7)Display\n10)Get Head\n11)Exit\n";
+
+        cout<<"Enter choice::";
+        int choice;
+        cin>>choice;
+
+        switch (choice) {
+            case 1: {
+                cout << "\nEnter number to insert::";
+                int num;
+                cin >> num;
+                l.insertFirst(num);
+                break;
+            }
+            case 2: {
+                cout << "\nEnter number to insert::";
+                int num;
+                cin >> num;
+                cout << "\nEnter position::";
+                int pos;
+                cin >> pos;
+                l.insertPos(num, pos);
+                break;
+            }
+            case 3: {
+                cout << "\nEnter number to insert::";
+                int num;
+                cin >> num;
+                l.insertLast(num);
+                break;
+            }
+            case 4: {
+                l.deleteFirst();
+                break;
+            }
+            case 5: {
+                cout << "\nEnter position::";
+                int pos;
+                cin >> pos;
+                l.deletePos(pos);
+                break;
+            }
+            case 6: {
+                l.deleteLast();
+                break;
+            }
+            case 7: {
+                l.display();
+                break;
+            }
+            case 8: {
+                cout << "\nThe head value is ::" << l.gethead();
+            }
+            case 9: {
+                cout << "\nThank you!\n";
+                return 0;
+            }
+            default: {
+                cout << "\n!Invalid Input!\n";
+                break;
+            }
+        }
+    }
+}
+
+
+
+
