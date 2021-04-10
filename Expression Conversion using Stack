@@ -1,0 +1,334 @@
+#include <bits/stdc++.h>
+#include "Stack.cpp"
+using namespace std;
+
+class conversion
+{
+    string infix,prefix,postfix;
+public:
+    bool isOperator(char);
+    int associtivity(char);
+    int precedence(char);
+    void inputinfix();
+    void infixtoprefix();
+    void evaluateprefix();
+    void infixtopostfix();
+    void evaluatepostfix();
+};
+
+bool conversion::isOperator(char c)
+{
+    if (c=='+' or c=='-' or c=='*' or c=='/' or c=='^')
+        return true;
+    return false;
+}
+
+int conversion::associtivity(char c)
+{
+    if (c=='^')
+        return 2;
+    else if (c=='+' or c=='-' or c=='*' or c=='/')
+        return 1;
+    else
+        return -1;
+}
+
+int conversion::precedence(char c)
+{
+    if (c=='^')
+        return 3;
+    else if (c=='/' or c=='*')
+        return 2;
+    else if (c=='+' or c=='-')
+        return 1;
+    else
+        return -1;
+}
+
+void conversion::inputinfix()
+{
+    infix="";
+    cout<<"Enter infix::";
+    cin>>infix;
+    cout<<"\nThe infix is ::"<<infix<<"\n";
+}
+
+
+void conversion::infixtopostfix()
+{
+    stack<char> stack;
+    postfix="";
+
+    for (int i = 0; i < infix.length(); ++i)
+    {
+        if (!isOperator(infix[i]))
+        {
+            postfix+=infix[i];
+        }
+        else if (infix[i]=='(')
+        {
+            stack.push(infix[i]);
+        }
+        else if (infix[i]==')')
+        {
+            while ((stack.top()!='(') and (!stack.empty()))
+            {
+                postfix+=stack.top();
+                stack.pop();
+            }
+            if (stack.top()=='(')
+            {
+                stack.pop();
+            }
+        }
+        else
+        {
+            if (stack.empty())
+            {
+                stack.push(infix[i]);
+            }
+            else if (precedence(infix[i])>precedence(stack.top()))
+                {
+                    stack.push(infix[i]);
+                }
+            else if (precedence(infix[i])==precedence(stack.top()))
+            {
+                if (associtivity(infix[i] == 2))
+                {
+                    stack.push(infix[i]);
+                }
+                else if (associtivity(infix[i] == 1))
+                {
+                    while ((!stack.empty()) and precedence(infix[i]) <= precedence(stack.top()))
+                    {
+                        postfix += stack.top();
+                        stack.pop();
+                    }
+                    stack.push(infix[i]);
+                }
+            }
+            else
+            {
+                while (!stack.empty() and precedence(infix[i])<=precedence(stack.top()))
+                {
+                    postfix+=stack.top();
+                    stack.pop();
+                }
+                stack.push(infix[i]);
+            }
+        }
+
+    }
+
+    while (!stack.empty())
+    {
+        postfix+=stack.top();
+        stack.pop();
+    }
+
+    cout<<"\nThe postfix expression is :: "<<postfix<<"\n";
+
+}
+
+void conversion::evaluatepostfix()
+{
+    stack<int> stack;
+    for (int i = 0; i < postfix.length(); ++i)
+    {
+        if (!isOperator(postfix[i]))
+        {
+            cout<<"\nEnter value for "<<postfix[i]<<"::";
+            int val;
+            cin>>val;
+            stack.push(val);
+        }
+        else
+        {
+            int one=stack.top();
+            stack.pop();
+            int two=stack.top();
+            stack.pop();
+
+            char op=postfix[i];
+
+            switch (op) {
+                case '+': {
+                    stack.push(one + two);
+                    break;
+                }
+                case '-': {
+                    stack.push(two - one);
+                    break;
+                }
+                case '*': {
+                    stack.push(one * two);
+                    break;
+                }
+                case '/': {
+                    stack.push(two / one);
+                    break;
+                }
+                case '^': {
+                    stack.push(pow(two, one));
+                    break;
+                }
+            }
+        }
+    }
+    cout<<"\nThe value of postfix is::"<<stack.top()<<endl;
+}
+
+
+
+
+
+
+void conversion::infixtoprefix()
+{
+    stack<char> stack;
+    prefix="";
+
+    reverse(infix.begin(),infix.end());
+
+    for (int i = 0; i < infix.length(); ++i)
+    {
+        if (infix[i]=='(')
+            infix=')';
+        else if (infix[i]==')')
+            infix='(';
+
+    }
+
+    for (int i = 0; i < infix.length(); ++i)
+    {
+        if (!isOperator(infix[i]))
+        {
+            prefix+=infix[i];
+        }
+        else if (infix[i]=='(')
+        {
+            stack.push(infix[i]);
+        }
+        else if (infix[i]==')')
+        {
+            while ((stack.top()!='(') and (!stack.empty()))
+            {
+                prefix+=stack.top();
+                stack.pop();
+            }
+            if (stack.top()=='(')
+            {
+                stack.pop();
+            }
+        }
+        else
+        {
+            if (stack.empty())
+            {
+                stack.push(infix[i]);
+            }
+            else if (precedence(infix[i])>precedence(stack.top()))
+                {
+                    stack.push(infix[i]);
+                }
+            else if (precedence(infix[i])==precedence(stack.top()) and associtivity(infix[i] == 2))
+            {
+
+                while ((!stack.empty()) and precedence(infix[i]) == precedence(stack.top()))
+                {
+                    prefix += stack.top();
+                    stack.pop();
+                }
+                stack.push(infix[i]);
+            }
+            else if (precedence(infix[i])==precedence(stack.top()))
+            {
+                stack.push(infix[i]);
+            }
+            else
+            {
+                while (!stack.empty() and precedence(infix[i])<precedence(stack.top()))
+                {
+                    prefix+=stack.top();
+                    stack.pop();
+                }
+                stack.push(infix[i]);
+            }
+        }
+
+    }
+
+    while (!stack.empty())
+    {
+        prefix+=stack.top();
+        stack.pop();
+    }
+
+    reverse(prefix.begin(),prefix.end());
+
+    cout<<"\nThe prefix expression is :: "<<prefix<<"\n";
+
+}
+
+void conversion::evaluateprefix()
+{
+    reverse(prefix.begin(),prefix.end());
+
+    stack<int> stack;
+    for (int i = 0; i < prefix.length(); ++i)
+    {
+        if (!isOperator(prefix[i]))
+        {
+            cout<<"\nEnter value for "<<prefix[i]<<"::";
+            int val;
+            cin>>val;
+            stack.push(val);
+        }
+        else
+        {
+            int one=stack.top();
+            stack.pop();
+            int two=stack.top();
+            stack.pop();
+
+            char op=prefix[i];
+
+            switch (op) {
+                case '+': {
+                    stack.push(one + two);
+                    break;
+                }
+                case '-': {
+                    stack.push(two - one);
+                    break;
+                }
+                case '*': {
+                    stack.push(one * two);
+                    break;
+                }
+                case '/': {
+                    stack.push(two / one);
+                    break;
+                }
+                case '^': {
+                    stack.push(pow(two, one));
+                    break;
+                }
+            }
+        }
+    }
+    cout<<"\nThe value of prefix is::"<<stack.top()<<endl;
+}
+
+
+
+
+int main()
+{
+    conversion c;
+    c.inputinfix();
+    c.infixtopostfix();
+    c.evaluatepostfix();
+    c.infixtoprefix();
+    c.evaluateprefix();
+}
