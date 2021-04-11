@@ -1,0 +1,138 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define n 5
+
+class cqueue
+{
+    int q[n];
+    int front=-1,rear=-1;
+public:
+    bool isempty();
+    bool isfull();
+    void enqueue();
+    void dequeue();
+    void display();
+};
+
+bool cqueue::isempty()
+{
+    if (rear==-1)
+        return true;
+    return false;
+}
+
+bool cqueue::isfull()
+{
+    if (front==(rear+1)%n)
+        return true;
+    return false;
+}
+
+void cqueue::enqueue()
+{
+    if (isfull())
+    {
+        cout<<"\nQueue is Full!\n";
+        cout<<"\nFront="<<front<<"\nRear="<<rear<<endl;
+        return;
+    }
+    cout<<"\nEnter number to insert::";
+    int num;
+    cin>>num;
+
+    if (isempty())
+    {
+        rear=front=0;
+    }
+    else
+    {
+        rear=(rear+1)%n;
+    }
+    q[rear]=num;
+
+    display();
+    cout<<"\nFront="<<front<<"\nRear="<<rear<<endl;
+}
+
+void cqueue::dequeue()
+{
+    if (isempty())
+    {
+        cout<<"\nQueue is empty!\n";
+        cout<<"\nFront="<<front<<"\nRear="<<rear<<endl;
+        return;
+    }
+    if (rear==front)
+    {
+        rear=front=-1;
+    }
+    else
+    {
+        front=(front+1)%n;
+    }
+
+    display();
+    cout<<"\nFront="<<front<<"\nRear="<<rear<<endl;
+
+}
+
+void cqueue::display()
+{
+    if (isempty())
+    {
+        cout<<"\nQueue is empty!\n";
+        return;
+    }
+
+    for (int i = front; i != rear; i=(i+1)%n)
+    {
+        cout<<q[i]<<" ";
+    }
+    cout<<q[rear]<<endl;
+}
+
+
+int main()
+{
+    cqueue c;
+
+    while (1)
+    {
+        cout << "\n1)Enqueue"
+                "\n2)Dequeue"
+                "\n3)Display"
+                "\n4)Exit\n";
+
+        cout << "\nEnter choice::";
+        int choice;
+        cin >> choice;
+
+        switch (choice) {
+            case 1: {
+                c.enqueue();
+                break;
+            }
+            case 2: {
+                c.dequeue();
+                break;
+            }
+            case 3: {
+                c.display();
+                break;
+            }
+            case 4: {
+                cout << "\n\nThank you!\n\n";
+                return 0;
+            }
+            default: {
+                cout << "\n\nInvalid Input!\n\n";
+                break;
+            }
+
+        }
+    }
+}
+
+
+
+
