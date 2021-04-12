@@ -1,0 +1,132 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+
+struct tnode
+{
+    int data;
+    tnode *lchild;
+    tnode *rchild;
+};
+
+
+class btree
+{
+    tnode *root=NULL;
+public:
+    tnode *getnode(int);
+    tnode *getroot();
+    void insert(int);
+    void inorder(tnode*);
+};
+
+tnode *btree::getroot() {return root;}
+
+tnode *btree::getnode(int num)
+{
+    tnode *temp=new tnode();
+    temp->data=num;
+    temp->lchild=NULL;
+    temp->rchild=NULL;
+    return temp;
+}
+
+void btree::insert(int num)
+{
+    if (root==NULL)
+    {
+        root=getnode(num);
+        return;
+    }
+
+    bool flag=true;
+    tnode *pass=root;
+
+    while (flag)
+    {
+        cout<<"\nWhere do you want to insert(l/r)?";
+        char c;
+        cin>>c;
+
+        if (c=='l')
+        {
+            if (pass->lchild==NULL)
+            {
+                tnode *newnode=getnode(num);
+                pass->lchild=newnode;
+                flag=false;
+            }
+            else
+            {
+                pass=pass->lchild;
+            }
+        }
+        if (c=='r')
+        {
+            if (pass->rchild==NULL)
+            {
+                tnode *newnode=getnode(num);
+                pass->rchild=newnode;
+                flag=false;
+            }
+            else
+            {
+                pass=pass->rchild;
+            }
+        }
+
+    }
+}
+
+
+void btree::inorder(tnode *root)
+{
+    if (root!=NULL)
+    {
+        inorder(root->lchild);
+        cout<<root->data<<" ";
+        inorder(root->rchild);
+    }
+}
+
+
+int main()
+{
+    btree t;
+
+    while (1)
+    {
+        cout << "\n1)Insert\n2)Display\n0)Exit\n";
+
+        cout << "\nEnter choice::";
+        int choice;
+        cin >> choice;
+
+        switch (choice) {
+            case 1: {
+                cout << "\nEnter number to insert::";
+                int num;
+                cin >> num;
+                t.insert(num);
+                break;
+            }
+            case 2: {
+                t.inorder(t.getroot());
+                break;
+            }
+            case 0: {
+                cout << "\n\nThank you!\n\n";
+                return 0;
+            }
+            default: {
+                cout << "\n\n!Invalid Input!\n\n";
+                break;
+            }
+
+        }
+    }
+
+
+}
+
+
