@@ -1,0 +1,270 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct node
+{
+    char data;
+    node * lchild;
+    node * rchild;
+};
+
+class exptree
+{
+    node *root=NULL;
+    string postfix;
+public:
+    node *getnode(char);
+    node *getroot();
+    bool isOperator(char);
+    void inputpostfix();
+    void creation();
+    void preorder_rec(node*);
+    void inorder_rec(node*);
+    void postorder_rec(node*);
+    void preorder_nonrec(node*);
+    void inorder_nonrec(node*);
+    void postorder_nonrec(node*);
+
+};
+
+node *exptree::getnode(char c)
+{
+    node *temp=new node();
+    temp->data=c;
+    temp->rchild=NULL;
+    temp->lchild=NULL;
+    return temp;
+}
+
+node *exptree::getroot() {return root;}
+
+void exptree::inputpostfix()
+{
+    postfix="";
+    cout<<"\nEnter expression::";
+    cin>>postfix;
+}
+
+bool exptree::isOperator(char c)
+{
+    if (c=='+' or c=='-' or c=='*' or c=='/' or c=='^')
+        return true;
+    return false;
+}
+
+void exptree::creation()
+{
+    stack<node*> stack;
+    for (int i = 0; i < postfix.length(); ++i)
+    {
+        if (!isOperator(postfix[i]))
+        {
+            node *newnode=getnode(postfix[i]);
+            stack.push(newnode);
+        }
+        else
+        {
+            node *temp=getnode(postfix[i]);
+            temp->rchild=stack.top();
+            stack.pop();
+            temp->lchild=stack.top();
+            stack.pop();
+            stack.push(temp);
+        }
+
+    }
+    root=stack.top();
+}
+
+void exptree::preorder_rec(node * root)
+{
+    if (root!=NULL)
+    {
+        cout<<root->data;
+        preorder_rec(root->lchild);
+        preorder_rec(root->rchild);
+    }
+}
+void exptree::inorder_rec(node * root)
+{
+    if (root!=NULL)
+    {
+        inorder_rec(root->lchild);
+        cout<<root->data;
+        inorder_rec(root->rchild);
+    }
+}
+void exptree::postorder_rec(node * root)
+{
+    if (root!=NULL)
+    {
+        postorder_rec(root->lchild);
+        postorder_rec(root->rchild);
+        cout<<root->data;
+    }
+}
+
+void exptree::preorder_nonrec(node * root)
+{
+    stack<node*> stack;
+    node *temp=root;
+    if (temp==NULL)
+    {
+        cout<<"\nThe tree is empty!";
+        return;
+    }
+    while (temp!=NULL)
+    {
+        stack.push(temp);
+        cout<<temp->data;
+        temp=temp->lchild;
+    }
+
+    while (!stack.empty())
+    {
+        temp=stack.top();
+        stack.pop();
+        temp=temp->rchild;
+        while (temp!=NULL)
+        {
+            stack.push(temp);
+            cout<<temp->data;
+            temp=temp->lchild;
+        }
+    }
+
+}
+
+
+
+void exptree::inorder_nonrec(node * root)
+{
+    stack<node*> stack;
+    node *temp=root;
+    if (temp==NULL)
+    {
+        cout<<"\nThe tree is empty!";
+        return;
+    }
+    while (temp!=NULL)
+    {
+        stack.push(temp);
+        temp=temp->lchild;
+    }
+
+    while (!stack.empty())
+    {
+        temp=stack.top();
+        stack.pop();
+        cout<<temp->data;
+        temp=temp->rchild;
+        while (temp!=NULL)
+        {
+            stack.push(temp);
+            temp=temp->lchild;
+        }
+    }
+
+}
+
+
+void exptree::postorder_nonrec(node *root)
+{
+    stack<node*> stack1;
+    stack<node*> stack2;
+    node *temp=root;
+    if (temp==NULL)
+    {
+        cout<<"\nThe tree is empty!";
+        return;
+    }
+
+    stack1.push(temp);
+
+    while (!stack1.empty())
+    {
+        temp=stack1.top();
+        stack1.pop();
+        stack2.push(temp);
+        if (temp->lchild!=NULL)
+        {
+            stack1.push(temp->lchild);
+        }
+        if (temp->rchild!=NULL)
+        {
+            stack1.push(temp->rchild);
+        }
+    }
+
+    while (!stack2.empty())
+    {
+        temp=stack2.top();
+        cout<<temp->data;
+        stack2.pop();
+    }
+
+
+
+}
+
+
+int main()
+{
+    exptree t;
+
+    while (1)
+    {
+        cout << "\n1)Input Postfix\n2)Create Tree\n3)Recursive Traversal\n4)Non Recursive Traversal"
+                "\n0)Exit\n";
+
+        cout << "\nEnter choice::";
+        int choice;
+        cin >> choice;
+
+        switch (choice)
+        {
+            case 1:{
+                t.inputpostfix();
+                break;
+            }
+            case 2: {
+                t.creation();
+                break;
+            }
+            case 3: {
+                cout << "\nRecursive Traversal::";
+            cout<<"\nPreorder::";
+            t.preorder_rec(t.getroot());
+                cout << "\nInorder::";
+                t.inorder_rec(t.getroot());
+            cout<<"\nPostorder::";
+            t.postorder_rec(t.getroot());
+                break;
+            }
+        case 4:
+        {
+            cout<<"\nNon Recursive Traversal::";
+            cout<<"\nPreorder::";
+            t.preorder_nonrec(t.getroot());
+            cout<<"\nInorder::";
+            t.inorder_nonrec(t.getroot());
+            cout<<"\nPostorder::";
+            t.postorder_nonrec(t.getroot());
+            break;
+        }
+            case 0:
+            {
+                cout << "\n\nThank you!\n\n";
+                return 0;
+            }
+            default: {
+                cout << "\n\nInvalid Input!\n\n";
+                break;
+            }
+
+        }
+    }
+
+
+}
+
