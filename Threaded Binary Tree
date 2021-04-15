@@ -1,0 +1,189 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+struct tnode
+{
+    int data;
+    tnode *lchild;
+    tnode *rchild;
+    int lthread;
+    int rthread;
+};
+
+class tbt
+{
+    tnode *head=NULL;
+    tnode *root=NULL;
+public:
+    tnode *getnode(int);
+    tnode *getroot();
+    void sethead();
+    void setroot(int);
+    void insert(int);
+    void inorder();
+};
+
+tnode *tbt::getnode(int num)
+{
+    tnode *temp=new tnode();
+    temp->data=num;
+    temp->lchild=NULL;
+    temp->rchild=NULL;
+    temp->lthread=1;
+    temp->rthread=1;
+}
+
+tnode *tbt::getroot() {return root;}
+
+void tbt::sethead()
+{
+    head=getnode(-1);
+    head->lchild=head;
+    head->rchild=head;
+}
+
+void tbt::setroot(int num)
+{
+    root=getnode(num);
+    root->lchild=head;
+    root->rchild=head;
+    head->lthread=0;
+    head->lchild=root;
+}
+
+
+void tbt::insert(int num)
+{
+    if (root==NULL)
+    {
+        sethead();
+        setroot(num);
+        return;
+    }
+
+    tnode *pass=root;
+    bool flag=true;
+
+    while (flag)
+    {
+        cout<<"\nWhere you want to insert(l/r)?";
+        char c;
+        cin>>c;
+
+        if (c=='l')
+        {
+            if (pass->lthread==1)
+            {
+                tnode *newnode=getnode(num);
+                newnode->lchild=pass->lchild;
+                pass->lchild=newnode;
+                newnode->rchild=pass;
+                pass->lthread=0;
+                flag=false;
+            }
+            else
+            {
+                pass=pass->lchild;
+            }
+
+        }
+
+        if (c=='r')
+        {
+            if (pass->rthread==1)
+            {
+                tnode *newnode=getnode(num);
+                newnode->rchild=pass->rchild;
+                pass->rchild=newnode;
+                newnode->lchild=pass;
+                pass->rthread=0;
+                flag=false;
+            }
+            else
+            {
+                pass=pass->rchild;
+            }
+        }
+    }
+}
+
+void tbt::inorder()
+{
+    if (root==NULL)
+    {
+        cout<<"\n\nThe tree is empty!\n\n";
+        return;
+    }
+    tnode *pass=root;
+
+    while (pass->lthread==0)
+    {
+        pass=pass->lchild;
+    }
+
+    while (pass!=head)
+    {
+        cout<<pass->data<<" ";
+        if (pass->rthread==1)
+        {
+            pass = pass->rchild;
+        }
+        else
+        {
+            pass = pass->rchild;
+            while (pass->lthread==0)
+            {
+                pass=pass->lchild;
+            }
+        }
+
+
+    }
+
+
+}
+
+
+
+int main()
+{
+    tbt t;
+
+    while (1)
+    {
+        cout << "\n1)Insert\n2)Inorder\n3)Get root\n0)Exit\n";
+
+        cout << "\nEnter choice::";
+        int choice;
+        cin >> choice;
+
+        switch (choice) {
+            case 1: {
+                cout << "\nEnter number to insert::";
+                int num;
+                cin >> num;
+                t.insert(num);
+                break;
+            }
+            case 2: {
+                t.inorder();
+                break;
+            }
+            case 3: {
+                t.getroot();
+                break;
+            }
+            case 0: {
+                cout << "\n\nThank you!\n\n";
+                return 0;
+            }
+            default: {
+                cout << "\n\nInvalid Input\n\n";
+                break;
+            }
+
+        }
+    }
+
+
+}
