@@ -14,7 +14,7 @@ int linearSearch(int a[],int size,int key)
     return -1;
 }
 
-//binary search recursive
+//recursive binary search
 int rec_binarySearch(int a[],int l,int r,int key)
 {
     int mid;
